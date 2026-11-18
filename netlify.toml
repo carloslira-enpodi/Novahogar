@@ -1,0 +1,32 @@
+# Configuración de despliegue en Netlify.
+#
+# La aplicación vive en `plataforma/`, no en la raíz: el nombre del directorio
+# raíz ("NOVA HOGAR", con espacio y mayúsculas) no es válido como nombre de
+# paquete npm. Por eso `base` apunta al subdirectorio.
+
+[build]
+  base = "plataforma"
+  command = "npm run build"
+  publish = ".next"
+
+# El runtime de Next.js en Netlify. Sin este plugin, el SSR y el ISR no
+# funcionan y el sitio pierde justo lo que lo hace indexable.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # El sitio arranca sin Supabase configurado: usa el inventario de
+  # demostración. Las variables reales se definen en el panel de Netlify
+  # (Site settings → Environment variables), nunca en este archivo.
+  NPM_FLAGS = "--no-audit --no-fund"
+
+# Cabeceras de seguridad. El sitio actual de Nova Hogar no envía ninguna.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"

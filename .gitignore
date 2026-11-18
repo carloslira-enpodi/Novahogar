@@ -1,0 +1,46 @@
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Variables de entorno — NUNCA se versionan.
+# Contienen la service_role key de Supabase y las API keys de los inquilinos.
+.env
+.env.local
+.env*.local
+.env.production
+
+# Despliegue
+.vercel/
+.netlify/
+
+# Paquetes generados
+*.zip
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
