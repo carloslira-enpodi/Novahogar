@@ -17,14 +17,13 @@ import { breadcrumbJsonLd, itemListJsonLd } from '@/lib/seo/jsonld';
 
 export const revalidate = 900;
 
-type Params = Promise<{ alcaldia: string }>;
+/*
+ * SIN generateStaticParams: misma razón que en la ficha de propiedad.
+ * El inquilino se resuelve con `headers()` en tiempo de petición, y el build
+ * no tiene petición. Ver el comentario en propiedades/[slug]/page.tsx.
+ */
 
-export async function generateStaticParams() {
-  const org = await getCurrentOrganization().catch(() => null);
-  if (!org) return [];
-  const municipalities = await listMunicipalities(org.id);
-  return municipalities.map((m) => ({ alcaldia: m.slug }));
-}
+type Params = Promise<{ alcaldia: string }>;
 
 async function resolve(slug: string) {
   const org = await getCurrentOrganization();

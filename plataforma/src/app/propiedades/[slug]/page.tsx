@@ -5,7 +5,6 @@ import type { Metadata } from 'next';
 import { getCurrentOrganization, getSiteUrl, whatsappLink } from '@/lib/site';
 import {
   getPropertyBySlug,
-  listAllSlugs,
   listProperties,
 } from '@/lib/repositories/properties';
 import { JsonLd } from '@/components/JsonLd';
@@ -17,16 +16,23 @@ import { PRICE_PLACEHOLDER } from '@/lib/display';
 import { operationLabel, primaryOperation, zoneLabel } from '@/lib/types';
 
 export const revalidate = 900;
-export const dynamicParams = true;
+
+/*
+ * SIN generateStaticParams, a propósito.
+ *
+ * El inquilino se resuelve por dominio con `headers()`, que solo existe
+ * durante una petición. `generateStaticParams` corre en el build, donde no
+ * hay petición: la combinación produce DYNAMIC_SERVER_USAGE y la ruta
+ * devuelve 500.
+ *
+ * La multi-inquilinía por host es incompatible con la generación estática en
+ * build. Para recuperar el prerenderizado habría que fijar el inquilino en
+ * build mediante una variable de entorno, cuando un despliegue sirva a una
+ * sola inmobiliaria. Mientras tanto, estas rutas se renderizan por petición
+ * igual que el home y el listado, que funcionan así.
+ */
 
 type Params = Promise<{ slug: string }>;
-
-export async function generateStaticParams() {
-  const org = await getCurrentOrganization().catch(() => null);
-  if (!org) return [];
-  const slugs = await listAllSlugs(org.id);
-  return slugs.map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
